@@ -17,7 +17,7 @@ public class AuthController {
 
     private final UserRepository repo;
     private final JwtConfig jwt;
-    private final PasswordEncoder encoder; 
+    private final PasswordEncoder encoder;
 
     public AuthController(UserRepository repo, JwtConfig jwt, PasswordEncoder encoder) {
         this.repo = repo;
@@ -46,7 +46,7 @@ public class AuthController {
         if (!encoder.matches(password, dbUser.getPassword())) {
              throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
         }
-        String token = jwt.generateToken(dbUser.getEmail());
-        return ResponseEntity.ok(Map.of("token", token));
+        String token = jwt.generateToken(dbUser);
+        return ResponseEntity.ok(Map.of("token", token, "user", dbUser));
     }
 }

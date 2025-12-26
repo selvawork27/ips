@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.Keys; // Important import
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
+import devenv.ips.entity.user.User;
 
 @Component
 public class JwtConfig {
@@ -15,12 +16,14 @@ public class JwtConfig {
     private final Key SIGNING_KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
     private final long EXPIRATION_TIME = 86400000; 
 
-    public String generateToken(String email) {
+    public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getEmail())
+                .claim("name", user.getName())
+                .claim("role", user.getRole())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SIGNING_KEY, SignatureAlgorithm.HS512) // Use Key object
+                .signWith(SIGNING_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }
 
